@@ -15,8 +15,9 @@ const page = async () => {
     <div className="space-y-6 container px-4 py-8">
       <div>
         <h1>Dashboard</h1>
-        <Link href={'/trips/new'}></Link>
-        <Button>New Trip</Button>
+        <Link href={'/trips/new'}>
+          <Button className="cursor-pointer">New Trip</Button>
+        </Link>
       </div>
     </div>
   );
