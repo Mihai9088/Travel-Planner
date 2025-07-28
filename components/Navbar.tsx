@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
-import GithubIcon from './GithubIcon';
+import GithubIcon from './github-icon';
 import { login, logout } from '@/lib/auth-actions';
 import { Session } from 'next-auth';
 

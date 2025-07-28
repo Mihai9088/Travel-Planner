@@ -15,5 +15,8 @@ export async function getTripById(tripId: string, userId: string) {
       id: tripId,
       userId: userId,
     },
+    include: {
+      locations: true,
+    },
   });
 }

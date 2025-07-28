@@ -1,17 +1,21 @@
 'use client';
-import { Trip } from '@/app/generated/prisma';
+import { Location, Trip } from '@/app/generated/prisma';
 import Image from 'next/image';
 import React, { useState } from 'react';
-import { Calendar, Plus } from 'lucide-react';
+import { Calendar, MapPin, Plus } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from './ui/button';
 import { Tabs, TabsList } from '@radix-ui/react-tabs';
 import { TabsContent, TabsTrigger } from './ui/tabs';
 import { getTripDurationInDays } from '@/lib/utils';
+import Map from './map';
+import SortableItinerary from './sortable-itinerary';
 
 type TripDetailClientProps = {
-  trip: Trip;
+  trip: TripWithLocations;
 };
+
+export type TripWithLocations = Trip & { locations: Location[] };
 
 const TripDetail = ({ trip }: TripDetailClientProps) => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -47,7 +51,7 @@ const TripDetail = ({ trip }: TripDetailClientProps) => {
 
       <div className="bg-white p-6 shadow rounded-lg">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="mb-6">
+          <TabsList className="mb-6 ">
             <TabsTrigger className="text-lg" value="overview">
               Overview
             </TabsTrigger>
@@ -59,7 +63,7 @@ const TripDetail = ({ trip }: TripDetailClientProps) => {
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent className="sace-y-6" value="overview">
+          <TabsContent className="space-y-6" value="overview">
             <div className="grid md:grid-cols-2 gap-6">
               <div>
                 <h2 className="text-2xl font-semibold mb-4">Trip Summary</h2>
@@ -75,12 +79,80 @@ const TripDetail = ({ trip }: TripDetailClientProps) => {
                       </p>
                     </div>
                   </div>
-                  <div className="flex itema-start"></div>
+                  <div className="flex items-start">
+                    <MapPin className="h-6 w-6 mr-3 text-gray-500" />
+                    <div>
+                      <p>Destinations</p>
+                      <p>
+                        {trip.locations.length}{' '}
+                        {trip.locations.length === 1 ? 'destination' : 'destinations'}
+                      </p>
+                    </div>
+                  </div>
                 </div>
+              </div>
+              <div className="h-72 rounded-lg overflow-hidden shadow">
+                <Map itineraries={trip.locations} />
+              </div>
+              {trip.locations.length === 0 && (
+                <div className="text-center p-4">
+                  <p>Add locations to your trip</p>
+                  <Link href={`/trips/${trip.id}/itinerary/new`}>
+                    <Button>
+                      <Plus className="mr-2 h-5 w-5" /> Add Location
+                    </Button>
+                  </Link>
+                </div>
+              )}
+
+              <div>
+                <p className="text-gray-600 leading-relaxed">{trip.description}</p>
               </div>
             </div>
           </TabsContent>
+
+          <TabsContent value="itinerary" className="space-y-6">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-2xl font-semibold"> Full Itinerary</h2>
+            </div>
+
+            {trip.locations.length === 0 ? (
+              <div className="text-center p-4">
+                <p>Add locations to see them on the itinerary.</p>
+                <Link href={`/trips/${trip.id}/itinerary/new`}>
+                  <Button>
+                    {' '}
+                    <Plus className="mr-2 h-5 w-5" /> Add Location
+                  </Button>
+                </Link>
+              </div>
+            ) : (
+              <SortableItinerary locations={trip.locations} tripId={trip.id} />
+            )}
+          </TabsContent>
+
+          <TabsContent value="map" className="space-y-6">
+            <div className="h-72 rounded-lg overflow-hidden shadow">
+              <Map itineraries={trip.locations} />
+            </div>
+            {trip.locations.length === 0 && (
+              <div className="text-center p-4">
+                <p>Add locations to see them on the map.</p>
+                <Link href={`/trips/${trip.id}/itinerary/new`}>
+                  <Button>
+                    {' '}
+                    <Plus className="mr-2 h-5 w-5" /> Add Location
+                  </Button>
+                </Link>
+              </div>
+            )}
+          </TabsContent>
         </Tabs>
+      </div>
+      <div className="text-center">
+        <Link href={'/trips'}>
+          <Button> Back to Trips</Button>
+        </Link>
       </div>
     </div>
   );

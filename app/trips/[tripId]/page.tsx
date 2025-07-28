@@ -3,7 +3,7 @@ import TripDetail from '@/components/trip-detail';
 import { getTripById } from '@/lib/actions/get-trips';
 import React from 'react';
 
-const pageDetail = async ({ params }: { params: { tripId: string } }) => {
+const PageDetail = async ({ params }: { params: { tripId: string } }) => {
   const { tripId } = params;
 
   const session = await auth();
@@ -29,4 +29,4 @@ const pageDetail = async ({ params }: { params: { tripId: string } }) => {
   return <TripDetail trip={trip} />;
 };
 
-export default pageDetail;
+export default PageDetail;
