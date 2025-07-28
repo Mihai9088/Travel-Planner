@@ -2,9 +2,8 @@
 
 import { auth } from '@/auth';
 import { prisma } from '../prisma';
-import { redirect } from 'next/navigation';
 
-export async function createTrip(formData: FormData) {
+export async function createTrip(formData: FormData): Promise<string | null> {
   const session = await auth();
   if (!session || !session.user?.id) {
     throw new Error('Not authenticated.');
@@ -34,5 +33,5 @@ export async function createTrip(formData: FormData) {
     },
   });
 
-  redirect('/trips');
+  return '/trips';
 }
