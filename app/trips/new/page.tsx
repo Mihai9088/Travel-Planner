@@ -19,6 +19,7 @@ const NewTrip = () => {
           <form
             className="space-y-6"
             action={(FormData: FormData) => {
+              if (imageUrl) FormData.append('imageUrl', imageUrl);
               startTransition(() => createTrip(FormData));
             }}
           >
@@ -72,16 +73,16 @@ const NewTrip = () => {
                 />
               </div>
             </div>
+
             <div>
               <label>Trip Image</label>
               {imageUrl && (
                 <Image
                   src={imageUrl}
                   alt="Trip Preview"
-                  className="w-full mb-4 rounded-md max-h-48 object-cover"
+                  className="w-full mb-4 rounded-md max-h-120 object-fit-cover"
                   width={300}
                   height={300}
-                  fill
                 />
               )}
               <UploadButton
